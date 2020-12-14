@@ -53,6 +53,7 @@ namespace SpicyCo.API
 
             services.AddTransient<IProductManager, ProductManager>();
 
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -73,6 +74,8 @@ namespace SpicyCo.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseAuthorization();
 

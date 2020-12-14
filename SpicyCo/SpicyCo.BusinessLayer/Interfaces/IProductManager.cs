@@ -12,5 +12,7 @@ namespace SpicyCo.BusinessLayer.Interfaces
     {
         Task<IEnumerable<Product>> AddNewProduct(ProductDto productDto, string subcategoryName);
         Task<Product> GetProduct(Guid id);
+
+        Task<List<Product>>  GetAllProducts();
     }
 }

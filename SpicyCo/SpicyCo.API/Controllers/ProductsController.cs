@@ -27,6 +27,13 @@ namespace SpicyCo.API.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _productManager.GetAllProducts();
+            return Ok(products);
+        }    
+
+        [HttpGet]
         [Route("getProdWithAttr")]
         public async Task<IActionResult> GetProduct(Guid id)
         {

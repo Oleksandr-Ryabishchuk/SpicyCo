@@ -35,6 +35,12 @@ namespace SpicyCo.BusinessLayer.Managers
             return await _unitOfWork.GetRepository<Product>().GetAll();
         }
 
+        public async Task<List<Product>> GetAllProducts()
+        {
+            var products = await _unitOfWork.GetRepository<Product>().GetAll();
+            return products.ToList();
+        }
+
         public async Task<Product> GetProduct(Guid id)
         {
             var product = await _unitOfWork.GetRepository<Product>().GetById(id);
