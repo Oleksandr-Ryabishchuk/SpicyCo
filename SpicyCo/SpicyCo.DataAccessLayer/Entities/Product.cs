@@ -18,6 +18,8 @@ namespace SpicyCo.DataAccessLayer.Entities
         public bool IsAvailable { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public virtual User User { get; set; }
+        public Guid UserId { get; set; }
         public virtual Category Category { get; set; }
         public Guid CategoryId { get; set; }
         public virtual SubCategory SubCategory { get; private set; }

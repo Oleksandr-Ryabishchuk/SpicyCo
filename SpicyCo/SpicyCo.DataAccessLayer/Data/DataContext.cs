@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SpicyCo.DataAccessLayer.Entities;
 using System;
 using System.Collections.Generic;
@@ -6,12 +8,29 @@ using System.Text;
 
 namespace SpicyCo.DataAccessLayer.Data
 {
-    public class DataContext: DbContext
+    public class DataContext: IdentityDbContext<User, Role, Guid,
+        IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>,
+        IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
 
             builder.Entity<Product>()
                 .Property(i => i.Price).HasColumnType("money");
@@ -19,6 +38,11 @@ namespace SpicyCo.DataAccessLayer.Data
             builder.Entity<Product>()
                 .HasMany(i => i.Orders)
                 .WithMany(p => p.Products);
+           
+            builder.Entity<Product>()
+                .HasOne(i => i.User)
+                .WithMany(prop=> prop.Products)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Product>()
                 .HasOne(i => i.Category)
@@ -56,8 +80,7 @@ namespace SpicyCo.DataAccessLayer.Data
         }
 
         public DbSet<Field> Fields { get; set; }
-        public DbSet<Value> Values { get; set; }
-        public DbSet<User> Customers { get; set; }
+        public DbSet<Value> Values { get; set; }        
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
