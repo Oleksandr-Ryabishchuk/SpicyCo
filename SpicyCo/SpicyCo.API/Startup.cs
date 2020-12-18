@@ -1,25 +1,26 @@
+using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SpicyCo.DataAccessLayer.Data;
-using MediatR;
-using System.Reflection;
-using SpicyCo.DataAccessLayer.Handlers;
-using SpicyCo.DataAccessLayer.UnitOfWork;
 using SpicyCo.BusinessLayer.Interfaces;
 using SpicyCo.BusinessLayer.Managers;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+using SpicyCo.DataAccessLayer.Data;
 using SpicyCo.DataAccessLayer.Entities;
+using SpicyCo.DataAccessLayer.Handlers;
+using SpicyCo.DataAccessLayer.UnitOfWork;
+using System.Reflection;
+using System.Text;
 
 namespace SpicyCo.API
 {
@@ -52,8 +53,12 @@ namespace SpicyCo.API
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddTransient<IProductManager, ProductManager>();
+            services.AddTransient<IJWTGeneration, JWTGeneration>();
+            
+            services.AddTransient<Seed>();
 
+            services.AddTransient<IProductManager, ProductManager>();
+            
             IdentityBuilder builder = services.AddIdentityCore<User>(opt =>
             {
                 opt.Password.RequireDigit = false;
@@ -103,6 +108,8 @@ namespace SpicyCo.API
                 });
 
             services.AddCors();
+            services.AddAutoMapper(typeof(AdminManager).Assembly);
+            services.AddAutoMapper(typeof(ProductManager).Assembly);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
