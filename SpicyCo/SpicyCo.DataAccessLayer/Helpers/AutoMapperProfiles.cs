@@ -13,11 +13,14 @@ namespace SpicyCo.DataAccessLayer.Helpers
     {
         public AutoMapperProfiles()
         {
+            //CreateMap<User, UserForRegisterDto>();
+            CreateMap<User, UserForRegisterDto>().ReverseMap();
+
             CreateMap<User, UserForListDto>()
                 .ForMember(m => m.Age, opt =>
                 {
                     opt.MapFrom(d => d.DateOfBirth.CalculateAge());
-                });
+                }).ReverseMap();
             
             CreateMap<User, UserForDetailedDto>()
                 .ForMember(dest => dest.Age, opt => {
@@ -26,7 +29,7 @@ namespace SpicyCo.DataAccessLayer.Helpers
             
             CreateMap<UserForUpdateDto, User>();
 
-            CreateMap<UserForRegisterDto, User>();
+           
         }
     }
 }

@@ -18,6 +18,8 @@ using SpicyCo.BusinessLayer.Managers;
 using SpicyCo.DataAccessLayer.Data;
 using SpicyCo.DataAccessLayer.Entities;
 using SpicyCo.DataAccessLayer.Handlers;
+using SpicyCo.DataAccessLayer.Helpers;
+using SpicyCo.DataAccessLayer.Repository;
 using SpicyCo.DataAccessLayer.UnitOfWork;
 using System.Reflection;
 using System.Text;
@@ -52,6 +54,8 @@ namespace SpicyCo.API
             x => x.MigrationsAssembly("SpicyCo.DataAccessLayer")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            //services.AddScoped<IRepository, Repository>();
 
             services.AddTransient<IJWTGeneration, JWTGeneration>();
             
@@ -108,8 +112,8 @@ namespace SpicyCo.API
                 });
 
             services.AddCors();
-            services.AddAutoMapper(typeof(AdminManager).Assembly);
-            services.AddAutoMapper(typeof(ProductManager).Assembly);
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+                        
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
